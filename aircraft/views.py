@@ -12,11 +12,15 @@ class AircraftViewset(viewsets.ModelViewSet):
     """A viewset for Listing Aircraft"""
 
     def get_queryset(self):
-        tag = self.request.query_params.get('tag')
-        if tag:
-            return Aircraft.objects.filter(tags__contains=tag)
-        else:
-            return Aircraft.objects.all()
+        tags = self.request.query_params.get('tag').split(',')
+        print(tags)
+        q = Aircraft.objects.all()
+        ql = []
+        if tags:
+            for t in tags:
+                ql.append(q.filter(tags__contains=t))
+
+        return q.union(*ql)
     renderer_classes = [JSONRenderer]
     serializer_class = AircraftSerializer
     permission_classes = [AllowAny]
