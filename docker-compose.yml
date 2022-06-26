@@ -20,5 +20,3 @@ services:
     expose:
       - 8000
 
-volumes:
-  postgres_data:
